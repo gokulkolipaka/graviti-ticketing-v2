@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graviti Pharmaceuticals - IT Ticketing System</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="landing-container">
+        <header class="header">
+            <div class="logo-container">
+                <img src="/images/default-logo.png" alt="Graviti Pharmaceuticals" class="logo">
+                <h1>Graviti Pharmaceuticals</h1>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="welcome-section">
+                <h2>IT Support Ticketing System</h2>
+                <p>Quick and easy access to IT support services</p>
+            </div>
+
+            <div class="access-methods">
+                <div class="qr-section">
+                    <h3>Scan QR Code</h3>
+                    <div id="qr-code" class="qr-code-container">
+                        <div class="loading">Generating QR Code...</div>
+                    </div>
+                    <p>Scan with your mobile device</p>
+                </div>
+
+                <div class="url-section">
+                    <h3>Or Click Below</h3>
+                    <div class="access-buttons">
+                        <a href="/login.html" class="btn btn-primary">
+                            <span class="icon">🎫</span>
+                            Access Ticketing System
+                        </a>
+                        <a href="/dashboard.html" class="btn btn-secondary">
+                            <span class="icon">📊</span>
+                            View Dashboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <span class="feature-icon">🔐</span>
+                    <h3>Secure Access</h3>
+                    <p>LDAP integration with company credentials</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">⚡</span>
+                    <h3>Quick Support</h3>
+                    <p>Fast ticket creation and resolution</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">📱</span>
+                    <h3>Mobile Friendly</h3>
+                    <p>Access from any device, anywhere</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">📈</span>
+                    <h3>Real-time Tracking</h3>
+                    <p>Monitor ticket progress in real-time</p>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2024 Graviti Pharmaceuticals. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Generate QR Code on page load
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const response = await fetch('/api/qr-code');
+                const data = await response.json();
+                
+                if (data.qrCode) {
+                    document.getElementById('qr-code').innerHTML = 
+                        `<img src="${data.qrCode}" alt="QR Code" class="qr-image">`;
+                }
+            } catch (error) {
+                document.getElementById('qr-code').innerHTML = 
+                    '<div class="error">Unable to generate QR code</div>';
+            }
+        });
+    </script>
+</body>
+</html>
