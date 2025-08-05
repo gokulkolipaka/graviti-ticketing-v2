@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Graviti Ticketing System</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="admin-container">
+        <header class="admin-header">
+            <div class="logo-container">
+                <img id="companyLogo" src="/images/default-logo.png" alt="Logo" class="logo">
+                <h1 id="companyName" onclick="editCompanyName()">Graviti Pharmaceuticals</h1>
+            </div>
+            <div class="user-menu">
+                <span>Admin Panel</span>
+                <button onclick="logout()" class="btn btn-secondary">Logout</button>
+            </div>
+        </header>
+
+        <nav class="admin-nav">
+            <button class="nav-btn active" onclick="showSection('tickets')">All Tickets</button>
+            <button class="nav-btn" onclick="showSection('kanban')">Kanban Board</button>
+            <button class="nav-btn" onclick="showSection('ticket-flow')">Ticket Flow</button>
+            <button class="nav-btn" onclick="showSection('users')">User Management</button>
+            <button class="nav-btn" onclick="showSection('dashboard')">Analytics</button>
+            <button class="nav-btn" onclick="showSection('settings')">Settings</button>
+        </nav>
+
+        <main class="admin-main">
+            <!-- All Tickets Section -->
+            <section id="tickets" class="section active">
+                <div class="section-header">
+                    <h2>All Tickets</h2>
+                    <div class="ticket-filters">
+                        <select id="departmentFilter" onchange="filterAdminTickets()">
+                            <option value="">All Departments</option>
+                            <option value="IT">IT</option>
+                            <option value="HR">HR</option>
+                            <option value="Finance">Finance</option>
+                            <option value="Operations">Operations</option>
+                        </select>
+                        <select id="severityFilter" onchange="filterAdminTickets()">
+                            <option value="">All Severities</option>
+                            <option value="High">High</option>
+                            <option value="Medium">Medium</option>
+                            <option value="Low">Low</option>
+                        </select>
+                        <select id="statusFilter" onchange="filterAdminTickets()">
+                            <option value="">All Status</option>
+                            <option value="open">Open</option>
+                            <option value="in_progress">In Progress</option>
+                            <option value="closed">Closed</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="adminTicketsList" class="admin-tickets-list">
+                    <div class="loading">Loading tickets...</div>
+                </div>
+            </section>
+
+            <!-- Kanban Board Section -->
+            <section id="kanban" class="section">
+                <h2>Kanban Board</h2>
+                <div class="kanban-board">
+                    <div class="kanban-column">
+                        <h3>Open</h3>
+                        <div id="openColumn" class="kanban-items" ondrop="drop(event)" ondragover="allowDrop(event)">
+                        </div>
+                    </div>
+                    <div class="kanban-column">
+                        <h3>In Progress</h3>
+                        <div id="inProgressColumn" class="kanban-items" ondrop="drop(event)" ondragover="allowDrop(event)">
+                        </div>
+                    </div>
+                    <div class="kanban-column">
+                        <h3>Closed</h3>
+                        <div id="closedColumn" class="kanban-items" ondrop="drop(event)" ondragover="allowDrop(event)">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Ticket Flow Section -->
+            <section id="ticket-flow" class="section">
+                <div class="section-header">
+                    <h2>Detailed Ticket Flow</h2>
+                    <button onclick="exportTicketData()" class="btn btn-secondary">Export Data</button>
+                </div>
+                <div class="table-container">
+                    <table id="ticketFlowTable" class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Ticket ID</th>
+                                <th>Summary</th>
+                                <th>Status</th>
+                                <th>Last Update</th>
+                                <th>Opening Date</th>
+                                <th>Severity</th>
+                                <th>Requestor</th>
+                                <th>Assigned To</th>
+                                <th>Type/Category</th>
+                                <th>Time to Resolve</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ticketFlowBody">
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- User Management Section -->
+            <section id="users" class="section">
+                <div class="section-header">
+                    <h2>User Management</h2>
+                    <button onclick="showAddUserModal()" class="btn btn-primary">Add User</button>
+                </div>
+                <div id="usersList" class="users-list">
+                    <div class="loading">Loading users...</div>
+                </div>
+            </section>
+
+            <!-- Analytics Dashboard Section -->
+            <section id="dashboard" class="section">
+                <h2>Analytics Dashboard</h2>
+                <div class="dashboard-filters">
+                    <select id="dashDepartment" onchange="updateDashboard()">
+                        <option value="">All Departments</option>
+                        <option value="IT">IT</option>
+                        <option value="HR">HR</option>
+                        <option value="Finance">Finance</option>
+                    </select>
+                    <select id="dashCategory" onchange="updateDashboard()">
+                        <option value="">All Categories</option>
+                        <option value="Hardware issue">Hardware</option>
+                        <option value="Software issue">Software</option>
+                        <option value="Network issue">Network</option>
+                    </select>
+                    <select id="dashTeamMember" onchange="updateDashboard()">
+                        <option value="">All Team Members</option>
+                    </select>
+                </div>
+                <div class="dashboard-stats">
+                    <div class="stat-card">
+                        <h3 id="dashTotal">0</h3>
+                        <p>Total Tickets</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="dashOpen">0</h3>
+                        <p>Open</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="dashInProgress">0</h3>
+                        <p>In Progress</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="dashClosed">0</h3>
+                        <p>Closed</p>
+                    </div>
+                    <div class="stat-card overdue">
+                        <h3 id="dashOverdue">0</h3>
+                        <p>Overdue</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Settings Section -->
+            <section id="settings" class="section">
+                <h2>System Settings</h2>
+                <div class="settings-grid">
+                    <div class="settings-card">
+                        <h3>Company Branding</h3>
+                        <form id="brandingForm">
+                            <div class="form-group">
+                                <label for="logoUpload">Company Logo (170x66 pixels)</label>
+                                <input type="file" id="logoUpload" accept="image/*">
+                                <button type="button" onclick="uploadLogo()" class="btn btn-secondary">Upload Logo</button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <div class="settings-card">
+                        <h3>LDAP Configuration</h3>
+                        <form id="ldapForm">
+                            <div class="form-group">
+                                <label for="ldapUrl">LDAP URL</label>
+                                <input type="text" id="ldapUrl" placeholder="ldap://your-server:389">
+                            </div>
+                            <div class="form-group">
+                                <label for="ldapBaseDn">Base DN</label>
+                                <input type="text" id="ldapBaseDn" placeholder="dc=company,dc=com">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Save LDAP Settings</button>
+                        </form>
+                    </div>
+
+                    <div class="settings-card">
+                        <h3>Email Configuration</h3>
+                        <form id="emailForm">
+                            <div class="form-group">
+                                <label for="emailHost">SMTP Host</label>
+                                <input type="text" id="emailHost" placeholder="smtp.gmail.com">
+                            </div>
+                            <div class="form-group">
+                                <label for="emailPort">SMTP Port</label>
+                                <input type="number" id="emailPort" placeholder="587">
+                            </div>
+                            <div class="form-group">
+                                <label for="emailUser">Email Username</label>
+                                <input type="email" id="emailUser" placeholder="noreply@company.com">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Save Email Settings</button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Add User Modal -->
+    <div id="addUserModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New User</h3>
+                <button onclick="closeModal()" class="close-btn">&times;</button>
+            </div>
+            <form id="addUserForm">
+                <div class="form-group">
+                    <label for="newUsername">Username</label>
+                    <input type="text" id="newUsername" required>
+                </div>
+                <div class="form-group">
+                    <label for="newEmail">Email</label>
+                    <input type="email" id="newEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="newPassword">Password</label>
+                    <input type="password" id="newPassword" required>
+                </div>
+                <div class="form-group">
+                    <label for="newRole">Role</label>
+                    <select id="newRole" required>
+                        <option value="user">User</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="newDepartment">Department</label>
+                    <input type="text" id="newDepartment" required>
+                </div>
+                <div class="modal-buttons">
+                    <button type="submit" class="btn btn-primary">Add User</button>
+                    <button type="button" onclick="closeModal()" class="btn btn-secondary">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Ticket Actions Modal -->
+    <div id="ticketActionsModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Ticket Actions</h3>
+                <button onclick="closeModal()" class="close-btn">&times;</button>
+            </div>
+            <div id="ticketActionsBody">
+                <!-- Actions will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/admin.js"></script>
+</body>
+</html>
