@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Graviti Ticketing System</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <header class="dashboard-header">
+            <div class="logo-container">
+                <img src="/images/default-logo.png" alt="Graviti Pharmaceuticals" class="logo">
+                <h1 id="companyName">Graviti Pharmaceuticals</h1>
+            </div>
+            <div class="user-menu">
+                <span id="userName">User</span>
+                <button onclick="logout()" class="btn btn-secondary">Logout</button>
+            </div>
+        </header>
+
+        <nav class="dashboard-nav">
+            <button class="nav-btn active" onclick="showSection('create-ticket')">Create Ticket</button>
+            <button class="nav-btn" onclick="showSection('my-tickets')">My Tickets</button>
+            <button class="nav-btn" onclick="showSection('dashboard-stats')">Dashboard</button>
+        </nav>
+
+        <main class="dashboard-main">
+            <!-- Create Ticket Section -->
+            <section id="create-ticket" class="section active">
+                <h2>Create New Ticket</h2>
+                <form id="ticketForm" class="ticket-form" enctype="multipart/form-data">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="ticket_type">Type of Ticket *</label>
+                            <select id="ticket_type" name="ticket_type" required>
+                                <option value="">Select ticket type</option>
+                                <option value="Password reset">Password reset</option>
+                                <option value="New User ID Creation">New User ID Creation</option>
+                                <option value="De-Activate">De-Activate</option>
+                                <option value="Hardware issue">Hardware issue</option>
+                                <option value="Software issue">Software issue</option>
+                                <option value="New Asset">New Asset</option>
+                                <option value="Network issue">Network issue</option>
+                                <option value="Printer/Xerox issue">Printer/Xerox issue</option>
+                                <option value="Role Change">Role Change</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="severity">Severity *</label>
+                            <select id="severity" name="severity" required>
+                                <option value="">Select severity</option>
+                                <option value="High">High</option>
+                                <option value="Medium">Medium</option>
+                                <option value="Low">Low</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="supervisor_email">Supervisor/Reporting Manager Email</label>
+                            <input type="email" id="supervisor_email" name="supervisor_email" 
+                                   placeholder="supervisor@graviti.com">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="location">Location</label>
+                            <input type="text" id="location" name="location" 
+                                   placeholder="Building/Floor/Desk">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="employee_id">Employee ID</label>
+                            <input type="text" id="employee_id" name="employee_id" 
+                                   placeholder="EMP001">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Description *</label>
+                        <textarea id="description" name="description" rows="5" required
+                                  placeholder="Please provide detailed description of the issue..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="attachments">Attachments</label>
+                        <input type="file" id="attachments" name="attachments" multiple 
+                               accept=".jpg,.jpeg,.png,.pdf,.doc,.docx">
+                        <small>Maximum 5 files, 10MB each</small>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        <span class="loading hidden">Creating...</span>
+                        <span class="text">Submit Ticket</span>
+                    </button>
+                </form>
+            </section>
+
+            <!-- My Tickets Section -->
+            <section id="my-tickets" class="section">
+                <h2>My Tickets</h2>
+                <div class="tickets-filter">
+                    <select id="statusFilter" onchange="filterTickets()">
+                        <option value="">All Status</option>
+                        <option value="open">Open</option>
+                        <option value="in_progress">In Progress</option>
+                        <option value="closed">Closed</option>
+                    </select>
+                </div>
+                <div id="ticketsList" class="tickets-list">
+                    <div class="loading">Loading tickets...</div>
+                </div>
+            </section>
+
+            <!-- Dashboard Stats Section -->
+            <section id="dashboard-stats" class="section">
+                <h2>Dashboard Statistics</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3 id="totalTickets">0</h3>
+                        <p>Total Tickets</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="openTickets">0</h3>
+                        <p>Open Tickets</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="inProgressTickets">0</h3>
+                        <p>In Progress</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="closedTickets">0</h3>
+                        <p>Closed Tickets</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Ticket Detail Modal -->
+    <div id="ticketModal" class="modal hidden">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3 id="modalTitle">Ticket Details</h3>
+                <button onclick="closeModal()" class="close-btn">&times;</button>
+            </div>
+            <div id="modalBody" class="modal-body">
+                <!-- Ticket details will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/dashboard.js"></script>
+</body>
+</html>
